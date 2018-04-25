@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteMappingsManager">
+    <list>
+      <list>
+        <remote-mappings server-id="python@sftp://mipt_redmine@91.235.137.225:22/home/mipt_redmine/mipt_redmine/venv/bin/python" />
+      </list>
+    </list>
+  </component>
+</project>
