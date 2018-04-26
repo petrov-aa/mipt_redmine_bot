@@ -31,13 +31,14 @@ def send_welcome(message):
         session.add(chat)
         session.commit()
     bot.send_message(message.chat.id, """
-Бот для отслеживания новых задач на сайте redmine.mipt.ru
+Бот для трекера задач redmine.mipt.ru
 
 /help - Список команд
 
 Contact - @AlexanderPetrov
+Github - https://git.io/vpC22
 
-""")
+""", disable_web_page_preview=True)
 
 
 @bot.message_handler(commands=['help'])
