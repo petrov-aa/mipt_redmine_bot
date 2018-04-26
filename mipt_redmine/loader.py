@@ -1,9 +1,13 @@
+import re
+
 from mipt_redmine.database import Session
-from mipt_redmine.models import Feed, Chat
+from mipt_redmine.models import Feed
+from mipt_redmine.bot import bot
 
 
 def check_updates():
     session = Session()
+    author_pattern = re.compile('(.+)(\s\(.+\))?')
     feeds = session.query(Feed).all()
     for feed in feeds:
         current_entries = feed.get_entries()
@@ -20,54 +24,14 @@ def check_updates():
         session.add_all(new_entries)
         for entry in deleted_entries:
             session.delete(entry)
+        for entry in new_entries:
+            author_name_email = entry.author
+            groups = author_pattern.search(author_name_email).groups()
+            author_name = groups[0] if len(groups) > 0 else ''
+            bot.send_message(feed.chat.id,
+                             'Новая задача\n\nАвтор: *%s*\n\nЗаголовок: %s\n\n%s\n\n%s' % (feed.name,
+                                                                                           author_name,
+                                                                                           entry.title,
+                                                                                           entry.url),
+                             parse_mode='Markdown')
     session.commit()
-
-
-def add_new_chat(id):
-    session = Session()
-    chat = Chat()
-    chat.id = id
-    session.add(chat)
-    session.commit()
-
-
-def add_new_feed(chat_id, url):
-    """
-
-    :param chat_id: int
-    :param url: str
-    :rtype: bool
-    """
-    session = Session()
-    feed = __create_feed(chat_id, url)
-    if not __check_feed_exists(feed):
-        session.add(feed)
-        fetched_entries = feed.fetch_entries()
-        session.add_all(fetched_entries)
-        session.commit()
-        return True
-    return False
-
-
-def __create_feed(chat_id, url):
-    """
-
-    :type url: str
-    :type chat_id: int
-    :rtype: Feed
-    """
-    feed = Feed()
-    feed.chat_id = chat_id
-    feed.url = url
-    return feed
-
-
-def __check_feed_exists(feed):
-    """
-
-    :type feed: Feed
-    :rtype: bool
-    """
-    session = Session()
-    return session.query(Feed).filter(Feed.chat_id == feed.chat_id,
-                                      Feed.url == feed.url).first() is not None

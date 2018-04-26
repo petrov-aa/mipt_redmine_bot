@@ -1,1 +1,1 @@
-__all__ = ['database', 'models']
+__all__ = ['database', 'models', 'loader', 'bot']
