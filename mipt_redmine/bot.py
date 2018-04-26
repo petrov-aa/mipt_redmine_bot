@@ -131,7 +131,7 @@ def send_enter_feed_url(message):
         bot.send_message(message.chat.id, 'Введите URL или нажмите /cancel для отмены')
     elif chat.state == CHAT_STATE_WAIT_FEED_URL:
         feed = session.query(Feed).get(chat.editing_feed_id)
-        url_pattern = re.compile('https?://redmine\.mipt\.ru/issues\.atom.+')
+        url_pattern = re.compile('https?://redmine\.mipt\.ru/.*issues\.atom.+')
         url = message.text.strip()
         if len(url) == 0:
             bot.send_message(message.chat.id, 'URL не может быть пустым')
