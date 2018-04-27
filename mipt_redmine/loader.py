@@ -29,9 +29,9 @@ def check_updates():
             groups = author_pattern.search(author_name_email).groups()
             author_name = groups[0] if len(groups) > 0 else ''
             bot.send_message(feed.chat.id,
-                             'Новая задача\n\nЛента: *%s*\n\nАвтор: %s\n\nЗаголовок: %s\n\n%s' % (feed.name,
-                                                                                           author_name,
-                                                                                           entry.title,
-                                                                                           entry.url),
+                             'Новая задача - *%s*\n\nАвтор: %s\n\n%s\n\n%s' % (feed.name,
+                                                                               author_name,
+                                                                               entry.title,
+                                                                               entry.url),
                              parse_mode='Markdown')
     session.commit()
