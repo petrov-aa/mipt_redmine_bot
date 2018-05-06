@@ -1,12 +1,12 @@
 import re
 
-from mipt_redmine.database import Session
+from mipt_redmine.database import database
 from mipt_redmine.models import Feed
 from mipt_redmine.bot import bot
 
 
 def check_updates():
-    session = Session()
+    session = database.get_session()
     author_pattern = re.compile('(.+)(\s\(.+\))?')
     feeds = session.query(Feed).all()
     for feed in feeds:
@@ -22,8 +22,10 @@ def check_updates():
             if url not in fetched_entries:
                 deleted_entries.append(entry)
         session.add_all(new_entries)
+        session.flush()
         for entry in deleted_entries:
             session.delete(entry)
+        session.flush()
         for entry in new_entries:
             author_name_email = entry.author
             groups = author_pattern.search(author_name_email).groups()
@@ -35,3 +37,4 @@ def check_updates():
                                                                                entry.url),
                              parse_mode='Markdown')
     session.commit()
+    session.close()

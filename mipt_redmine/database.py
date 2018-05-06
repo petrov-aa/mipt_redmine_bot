@@ -1,35 +1,43 @@
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
-from sqlalchemy.orm import sessionmaker
-from configparser import ConfigParser
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session, scoped_session
+
+from .config import database_config
+
+__engine_url = URL(database_config['driver'])
+__engine_url.username = database_config['user']
+__engine_url.password = database_config['password']
+__engine_url.host = database_config['host']
+__engine_url.database = database_config['name']
+
+engine_url = str(__engine_url)
+
+__engine = create_engine(str(__engine_url) + '?charset=utf8')
 
 
-config = ConfigParser()
-config.read('./config.ini')
+class __Database:
+
+    __session = None
+
+    def __init__(self, session_maker):
+        """
+
+        :type session_maker: sessionmaker
+        """
+        self.__session__maker = session_maker
+
+    def get_session(self):
+        """
+
+        :rtype: Session
+        """
+        if self.__session is None or self.__session.dirty:
+            self.__session = self.__session__maker()
+        return self.__session
 
 
-if 'Database' not in config:
-    raise IndexError('Не заданы параметры подключения к базе данных')
+database = __Database(sessionmaker(bind=__engine))
 
-if 'driver' not in config['Database'] or len(config['Database']['driver'].strip()) == 0:
-    raise IndexError('Не задан вид базы данных')
-if 'host' not in config['Database'] or len(config['Database']['host'].strip()) == 0:
-    raise IndexError('Не задан хост базы данных')
-if 'username' not in config['Database'] or len(config['Database']['username'].strip()) == 0:
-    raise IndexError('Не задан пользователь базы данных')
-if 'password' not in config['Database']:
-    raise IndexError('Не задан пароль базы данных')
-if 'name' not in config['Database'] or len(config['Database']['name'].strip()) == 0:
-    raise IndexError('Не задано имя базы данных')
+Base = declarative_base()
 
-__url = URL(config['Database']['driver'])
-__url.host = config['Database']['host']
-__url.username = config['Database']['username']
-__url.password = config['Database']['password'] if config['Database']['password'] else None
-__url.database = config['Database']['name']
-
-engine = create_engine(str(__url) + '?charset=utf8')
-
-engine_url = str(__url)
-
-Session = sessionmaker(bind=engine)
