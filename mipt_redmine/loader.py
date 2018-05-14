@@ -30,7 +30,7 @@ def check_updates():
                 author_name_email = entry.author
                 groups = author_pattern.search(author_name_email).groups()
                 author_name = groups[0] if len(groups) > 0 else ''
-                bot.send_message(feed.chat.id,
+                bot.send_message(feed.chat.telegram_id,
                                  'Новая задача - *%s*\n\nАвтор: %s\n\n%s\n\n%s' % (feed.name,
                                                                                    author_name,
                                                                                    entry.title,
