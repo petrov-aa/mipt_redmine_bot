@@ -23,9 +23,11 @@ def check_updates():
                     deleted_entries.append(entry)
             session.add_all(new_entries)
             session.flush()
+            session.commit()
             for entry in deleted_entries:
                 session.delete(entry)
             session.flush()
+            session.commit()
             for entry in new_entries:
                 author_name_email = entry.author
                 groups = author_pattern.search(author_name_email).groups()
