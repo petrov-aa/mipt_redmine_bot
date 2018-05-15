@@ -23,7 +23,6 @@ def check_updates():
                     deleted_entries.append(entry)
             session.add_all(new_entries)
             session.flush()
-            session.commit()
             for entry in deleted_entries:
                 session.delete(entry)
             session.flush()
