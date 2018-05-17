@@ -101,8 +101,8 @@ def send_list(message):
             return
         feeds = chat.feeds
         if len(feeds) != 0:
-            items_text = '\n'.join(['%d. %s' % (i+1, feed.name) for i, feed in enumerate(feeds)])
-            bot.send_message(message.chat.id, BOT_LIST % (len(feeds), items_text))
+            items_text = '\n'.join(['%d. %s (%d)' % (i+1, feed.name, len(feed.entries)) for i, feed in enumerate(feeds)])
+            bot.send_message(message.chat.id, BOT_LIST % items_text)
         else:
             bot.send_message(message.chat.id, BOT_LIST_EMPTY)
 

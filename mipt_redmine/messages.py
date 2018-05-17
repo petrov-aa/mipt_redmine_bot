@@ -9,7 +9,7 @@ Github - https://git.io/vpC22
 
 BOT_HELP = """
 /help - Список команд
-/list - Список лент задач
+/list - Список лент
 /add - Добавить новую ленты
 /remove - Удалить ленту задач
 /cancel - Отмена текущей команды
@@ -56,7 +56,7 @@ BOT_CANCEL = """
 """
 
 BOT_LIST = """
-Количество: %d\n\n%s
+%s
 """
 
 BOT_LIST_EMPTY = """
